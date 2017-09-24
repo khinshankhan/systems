@@ -42,4 +42,6 @@ int main(){
   printf("Problem 1: %d\n", prob1);
   int prob5 = problem5(1,20);
   printf("Problem 5: %d\n", prob5);
+
+  return 0;
 }
