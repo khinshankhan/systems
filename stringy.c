@@ -9,11 +9,20 @@ int strlenA( char *s ) {
   }
   return i;
 }
+//NEED TO TEST
+char * strcpyA( char *dest, char *source ){
+  return strncpyA(dest, source, strlenA(source));
+}
+char * strncpyA( char *dest, char *source, int n){
+  int i = 0;
+  for(i = 0; i < n && source[i] != 0; i++)
+    *(dest + i) = source[i];
+  return dest;
+}
 
 char * strcatA( char *dest, char *source ) {
   return strncatA( dest, source, strlen(source) );
 }
-
 
 char * strncatA( char *dest, char *source, int n) {
   int dest_len = strlen(dest);
@@ -27,6 +36,10 @@ char * strncatA( char *dest, char *source, int n) {
   return dest;
 }
 
+//NEED TO DO
+int strcmp( char *s1, char *s2 ) {
+  int val=0;
+}
 
 char * strchrA( char *s, char c ) {
   int str_len = strlen(s);
