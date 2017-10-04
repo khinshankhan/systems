@@ -29,5 +29,14 @@ char * strncatA( char *dest, char *source, int n) {
 
 
 char * strchrA( char *s, char c ) {
+  int str_len = strlen(s);
+  int i;
   
+  for (i = 0; i < str_len; i++) {
+    if (s[i] == c) {
+      return s+i;
+    }
+  }
+
+  return 0;
 }
