@@ -29,5 +29,5 @@ char * strncatA( char *dest, char *source, int n) {
 
 
 char * strchrA( char *s, char c ) {
-
+  
 }
