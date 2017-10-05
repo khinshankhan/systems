@@ -16,4 +16,4 @@ clean:
 cleanall:
 	rm strtest
 	rm *.o
-	rm *.c
+	rm *.~

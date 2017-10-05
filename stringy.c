@@ -1,5 +1,4 @@
 #include <string.h>
-
 #include "stringy.h"
 
 int strlenA( char *s ) {
@@ -9,10 +8,11 @@ int strlenA( char *s ) {
   }
   return i;
 }
-//NEED TO TEST
+
 char * strcpyA( char *dest, char *source ){
   return strncpyA(dest, source, strlenA(source));
 }
+
 char * strncpyA( char *dest, char *source, int n){
   int i = 0;
   for(i = 0; i < n && source[i] != 0; i++)
@@ -36,9 +36,18 @@ char * strncatA( char *dest, char *source, int n) {
   return dest;
 }
 
-//NEED TO DO
-int strcmp( char *s1, char *s2 ) {
-  int val=0;
+int strcmpA( char *s1, char *s2 ) {
+  int len = (strlenA(s1) > strlenA(s2)) ? strlenA(s1): strlenA(s2); 
+  int val = 0;
+  int i;
+  for(i = 0; i < len; i++){
+    i = (int)s1[i] -(int) s2[i];
+    if(i != 0)
+      break;
+  }
+  
+  return i;
+  
 }
 
 char * strchrA( char *s, char c ) {
