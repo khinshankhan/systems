@@ -46,19 +46,26 @@ int main() {
   char z[] = "apple";
   
   printf("Testing strcpy( dest, source ):\n");
-  printf("[standard]: %s\n", strcpyA(w, x));
-  printf("[mine]: %s\n", strcpy(y, z));
-  printf("[standard]: %s\n", strcpyA(w, v));
-  printf("[mine]: %s\n", strcpy(y, v));
+  printf("[standard]: %s\n", strcpy(w, x));
+  printf("[mine]: %s\n", strcpyA(y, z));
+  printf("[standard]: %s\n", strcpy(w, v));
+  printf("[mine]: %s\n", strcpyA(y, v));
   printf("\n");
 
-  printf("Testing strcmp( s1, s2 ):\n");
-  printf("[standard]: %d\n", strcmpA(s1, s2));
-  printf("[mine]: %d\n", strcmp(s1, s2));
-  printf("[standard]: %d\n", strcmpA(s2, s1));
-  printf("[mine]: %d\n", strcmp(s2, s1));
+  printf("Testing strncpy( dest, source ):\n");
+  printf("[standard]: %s\n", strncpy(s1, s2, 3));
+  printf("[mine]: %s\n", strncpyA(s1, s2, 3));
+  printf("[standard]: %s\n", strncpy(s2, s1, 2));
+  printf("[mine]: %s\n", strncpyA(s2, s1, 2));
 
-  
+  printf("Testing strcmp( s1, s2 ):\n");
+  printf("[standard]: %d\n", strcmp(s1, s2));
+  printf("[mine]: %d\n", strcmpA(s1, s2));
+  printf("[standard]: %d\n", strcmp(s2, s1));
+  printf("[mine]: %d\n", strcmpA(s2, s1));
+
+  printf("Done");
+
   return 0;
 
 }
