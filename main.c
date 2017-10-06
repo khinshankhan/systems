@@ -39,6 +39,7 @@ int main() {
   printf("[mine]: %p\n", strchrA(s2, c));
   printf("\n");
 
+  char u[] = "spicy";
   char v[] = "12345";
   char w[] = "hello";
   char x[] = "apple";
@@ -53,17 +54,18 @@ int main() {
   printf("\n");
 
   printf("Testing strncpy( dest, source ):\n");
-  printf("[standard]: %s\n", strncpy(s1, s2, 3));
-  printf("[mine]: %s\n", strncpyA(s1, s2, 3));
-  printf("[standard]: %s\n", strncpy(s2, s1, 2));
-  printf("[mine]: %s\n", strncpyA(s2, s1, 2));
+  printf("[standard]: %s\n", strncpy(w, u, 3));
+  printf("[mine]: %s\n", strncpyA(y, u, 3));
+  printf("[standard]: %s\n", strncpy(u, w, 2));
+  printf("[mine]: %s\n", strncpyA(u, w, 2));
+  printf("\n");
 
   printf("Testing strcmp( s1, s2 ):\n");
-  printf("[standard]: %d\n", strcmp(s1, s2));
-  printf("[mine]: %d\n", strcmpA(s1, s2));
-  printf("[standard]: %d\n", strcmp(s2, s1));
-  printf("[mine]: %d\n", strcmpA(s2, s1));
-
+  printf("[standard]: %d\n", strcmpA(s1, s2));
+  printf("[mine]: %d\n", strcmp(s1, s2));
+  printf("[standard]: %d\n", strcmpA(s2, s1));
+  printf("[mine]: %d\n", strcmp(s2, s1));
+  printf("\n");
   printf("Done");
 
   return 0;

@@ -13,7 +13,14 @@ run: all
 clean:
 	rm *.o
 	rm *~
+
+cleaner:
+	rm strtest
+	rm *.o
+	clear
+
 cleanall:
 	rm strtest
 	rm *.o
 	rm *.~
+	clear
