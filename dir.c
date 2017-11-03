@@ -4,6 +4,34 @@
 #include <sys/stat.h>
 #include <string.h>
 
+void convert(long int num, char* new){
+  //to store the floating point
+  char fl[256];
+  
+  if (!strcmp(new, "B")){
+    //printf("%ld %s", num, new);
+    sprintf(fl, "%f", (float) num / 1);
+  }
+
+  long int divisor;
+  if (!strcmp(new, "KB")){
+    divisor = 1024;
+    sprintf(fl, "%f", (float) num / divisor);
+  }
+  
+  if(!strcmp(new, "MB")){
+    divisor = (1024 * 1024);
+    sprintf(fl, "%f", (float) num / divisor);
+  }
+  
+  if (!strcmp(new, "GB")){
+    divisor = (1024 * 1024 * 1024);
+    sprintf(fl, "%f", (float) num / divisor);
+  }
+
+  printf("%s \t%s\n", fl, new);
+}
+
 void reading(char * filename){
   //attempt to open dir
   DIR * pointer; 
@@ -71,6 +99,11 @@ void reading(char * filename){
   
   printf("Total size of regular files is: %d\n", size);
     
+  convert(size, "B");
+  convert(size, "KB");
+  convert(size, "MB");
+  convert(size, "GB");
+  
   return;
 }
 
