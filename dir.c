@@ -67,6 +67,8 @@ void reading(char * filename){
     }
     point = readdir(pointer);
   }
+  closedir(pointer);
+  
   printf("Total size of regular files is: %d\n", size);
     
   return;
