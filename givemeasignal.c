@@ -2,10 +2,20 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
+#include <time.h>
 
 static void sighandler(int signo){
   if(signo == SIGINT){
-    printf("Oh man. It was SIGINT.\n");
+    char msg[256];
+    time_t mytime;
+    mytime = time(NULL);
+    
+    sprintf(msg, "\nOh man. It was SIGINT.\n%s\n", ctime(&mytime));
+    printf("%s", msg);
+    FILE * msgs = fopen("messages", "a");
+    fprintf(msgs, "%s", msg);
+    fclose(msgs);
+   
     exit(1);
   }
   if(signo == SIGUSR1){
