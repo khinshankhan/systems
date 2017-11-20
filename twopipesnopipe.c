@@ -6,33 +6,56 @@
 #include <errno.h>
 #include <string.h>
 
-void childwrite(int *fd, int READ, int WRITE){
-  printf("child number: %d\n", getpid());
+void childwrite(int *fd, int READ, int WRITE, int val){
+  close(fd[READ]);
+  printf("[child] doing quick maths (x + 2 -1): x = %d\n", val);
+  int num = val + 2 -1;
+  printf("[child] sending: %d\n", num);
+  write(fd[WRITE], &num, sizeof(num));
+  close(fd[WRITE]);
+  return;
 }
 
-void childread(int *fd, int READ, int WRITE){
-  printf("child number: %d\n", getpid());
+void childread(int *fd, int *fd2, int READ, int WRITE){
+  close(fd[WRITE]);
+  int val;
+  read(fd[READ], &val, sizeof(val));
+  printf("[child] received: %d\n", val);
+  childwrite(fd2, READ, WRITE, val);
+  close(fd[READ]);
+  return;
 }
 
 void parentwrite(int *fd, int READ, int WRITE){
-  printf("parent number: %d\n", getpid());
+  close(fd[READ]);
+  int num = 2;
+  printf("[parent] sending: %d\n", num);
+  write(fd[WRITE], &num, sizeof(num));
+  close(fd[WRITE]);
+  return;
 }
 
 void parentread(int *fd, int READ, int WRITE){
-  printf("parent number: %d\n", getpid());
+  close(fd[WRITE]);
+  int val;
+  read(fd[READ], &val, sizeof(val));
+  printf("[parent] received: %d\n", val);
+  close(fd[READ]);
+  return;
 }
 
 int main(){
   //pipes
-  int *fd1 = malloc(2 * sizeof *fd1);
-  int *fd2 = malloc(2 * sizeof *fd2);
+  int paren[2];
+  int child[2];
 
-  pipe(fd1); //for child to write into
-  pipe(fd2); //for parent to write into
+  pipe(paren); //for paren to write into
+  pipe(child); //for child to write into
   
   int READ = 0; // for using read end
   int WRITE = 1; // for using write end
 
+  int status;
   //forking to make child
   int f = fork();
   
@@ -42,19 +65,15 @@ int main(){
     printf("Something went wrong with fork, likely memory issue\nMessage: %s\n", strerror(errno));
     exit (1);
   }
-  
-  //parent
   if(f){
-    printf("PID number: %d\n", getpid());
-    parentread(fd1, READ, WRITE);
-    parentwrite(fd2, READ, WRITE);
-  }
-  //child
-  if(!f){
-    printf("PID number: %d\n", getpid());
-    childwrite(fd1, READ, WRITE);
-    childread(fd2, READ, WRITE);
+    parentwrite(paren, READ, WRITE);
+    wait(&status);
+    parentread(child, READ, WRITE);
   }
 
+  if(!f){
+    childread(paren, child, READ, WRITE);
+  }
+  
   return 0;
 }
