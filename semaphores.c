@@ -3,8 +3,55 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
 
+#define KEY 13579
 
+//creates a semaphore... or doesnt.
+void create(char * n){
+  int id = semget(KEY, 1, IPC_CREAT | IPC_EXCL | 0664);
+  // if -1, it existed, if not, semaphore didnt exist
+  if (id != -1){
+    // create a semaphore
+    int semaphore;
+    sscanf(n, "%d", &semaphore);
+    semctl(id, 0, SETVAL, semaphore);
+    printf("semaphore created: %d\n", id);
+    printf("value set: %s\n", n);
+  } 
+  else{
+    // semaphore exists
+    printf("semaphore already exists\n");
+  }
+}
+
+//gets the value of the semaphore... or doesnt
+void value(){
+  int id = semget(KEY, 0, 0);
+  //error
+  if(id == -1){
+    printf("error: semaphore doesnt exist or no access to it\n");
+  }
+  else{
+    printf("semaphore value: %d\n", semctl(id, 0, GETVAL));
+  }
+}
+
+//removes the semaphore... or doesnt. also, remove() is already a thing
+void removes(){
+  int id = semget(KEY, 0, 0);
+  //error
+  if(id == -1){
+    printf("error: semaphore doesnt exist or no access to it\n");
+  }
+  else{
+    printf("semaphore removed %d\n", semctl(id, 0, IPC_RMID)); 
+  }
+}
+
+//actual main. it'll check provided arguments. i got lazy w/ checking if int
 int main(int argc, char *argv[]){
   /*
     -c N
@@ -16,12 +63,8 @@ int main(int argc, char *argv[]){
       printf("Invalid number of Arguments\n");
       return 1;
     }
-    if(atoi(argv[2]) == 0){
-      printf("Invalid Type of Arguments\n");
-      return 1;
-    }
     else{
-      printf("%d c\n", atoi(argv[2]));
+      create(argv[2]);
       return 0;
     }
   }
@@ -35,7 +78,7 @@ int main(int argc, char *argv[]){
       printf("Invalid number of Arguments\n");
       return 1;
     }
-    printf("v\n");
+    value();
     return 0;
   }
 
@@ -48,7 +91,7 @@ int main(int argc, char *argv[]){
       printf("Invalid number of Arguments\n");
       return 1;
     }
-    printf("r\n");
+    removes();
     return 0;
   }
   
