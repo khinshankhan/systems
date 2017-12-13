@@ -1,4 +1,5 @@
 all: client server
+	clear
 
 client: client.o pipe_networking.o
 	gcc -o client client.o pipe_networking.o
@@ -16,5 +17,6 @@ pipe_networking.o: pipe_networking.c pipe_networking.h
 	gcc -c pipe_networking.c
 
 clean:
-	rm *.o
-	rm *~
+	rm -f *.o
+	rm -f *~
+	clear
