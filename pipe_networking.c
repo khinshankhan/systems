@@ -60,6 +60,11 @@ int client_handshake(int *to_server) {
   printf("Announcing the arrival of a famous pipe: Pipe %s\n", p_name);
 
   *to_server = open(FAMOUSPIPE, O_WRONLY);
+  if(*to_server == -1){
+    printf("Server is already engaged with a client.\nPlease try again later.\nlogout\n");
+    remove(p_name);
+    exit(1);
+  }
   printf("Reached out to the famous pipe\n");
   write(*to_server, buf, sizeof(buf));
 

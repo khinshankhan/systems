@@ -1,5 +1,12 @@
 #include "pipe_networking.h"
 
+static void sighandler(int signo){
+  //user wants to exit
+  if (signo == SIGINT){
+    printf("\nlogout\n");
+    exit(0);
+  }
+}
 
 int main() {
 
@@ -10,8 +17,11 @@ int main() {
   from_server = client_handshake( &to_server );
 
   while (1) {
-    printf("ENTER A MESSAGE TO SEND TO ADEEB: ");
+    signal(SIGINT, sighandler);
+    printf("ENTER A MESSAGE TO SEND TO SERVER: ");
     memset(buf,0,sizeof(buf));
+    //this snippet doesnt work
+    //supposed to exit if nothing was entered
     if(fgets(buf, sizeof(buf), stdin) == 0) {
       printf("Nothing entered. Exiting client.\n");
       return 0;

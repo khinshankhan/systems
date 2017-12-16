@@ -1,5 +1,17 @@
 #include "pipe_networking.h"
 
+#ifndef FAMOUSPIPE
+#define FAMOUSPIPE "imfamous"
+#endif
+
+static void sighandler(int signo){
+  //user wants to exit
+  if (signo == SIGINT){
+    printf("\nlogout\n");
+    remove(FAMOUSPIPE);
+    exit(0);
+  }
+}
 
 void reverse(char *string) {
   int i, j, temp;
@@ -24,6 +36,7 @@ int main() {
     int f = fork();
     if(f){
       wait(&status);
+      signal(SIGINT, sighandler);
       printf("\n\n\n");
     }
     else{
