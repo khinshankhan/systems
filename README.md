@@ -1,6 +1,8 @@
 # that-forking-server
 That Forking Server
 
+"Hi, Billy Mays here for that forking server"
+
 * Create a working forking server program, as described in class yesterday.
     * Check out the files in the src/ directory on https://github.com/mks65/fserver.
         * COPY them, do not move them!
