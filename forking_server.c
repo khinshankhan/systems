@@ -6,16 +6,25 @@ void subserver(int from_client);
 
 static void sighandler(int signo) {
   if (signo == SIGINT) {
-    remove("luigi");
+    remove(WKP);
     exit(0);
   }
 }
 
-int main() {
+void process(char * s) {
+  int i, j, temp;
+
+  for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
+    temp = s[i];
+    s[i] = s[j];
+    s[j] = temp;
+  }
 }
 
 void subserver(int from_client) {
+
 }
 
-void process(char * s) {
+int main() {
+
 }

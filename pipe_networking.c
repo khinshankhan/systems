@@ -12,7 +12,22 @@
   returns the file descriptor for the upstream pipe.
   =========================*/
 int server_setup() {
-  return -1;
+  int up_pipe;
+  char buffer[HANDSHAKE_BUFFER_SIZE];
+
+  printf(WKP);
+
+  mkfifo(WKP, 0600);
+
+  //block on open, recieve mesage
+  printf("[server] handshake: making wkp\n");
+  up_pipe = open(WKP, O_RDONLY, 0);
+  read(up_pipe, buffer, sizeof(buffer));
+  printf("[server] handshake: received [%s]\n", buffer);
+
+  remove(WKP);
+  printf("[server] handshake: removed wkp\n");
+  return up_pipe;
 }
 
 
@@ -25,7 +40,35 @@ int server_setup() {
   returns the file descriptor for the downstream pipe.
   =========================*/
 int server_connect(int from_client) {
-  return -1;
+  int dwn_pipe;
+  char buffer[HANDSHAKE_BUFFER_SIZE];
+
+  //send pp name to server
+  printf("[client] handshake: connecting to wkp\n");
+  *to_server = open(WKP, O_WRONLY, 0);
+  if ( *to_server == -1 )
+    exit(1);
+
+  //make private pipe
+  sprintf(buffer, "%d", getpid() );
+  mkfifo(buffer, 0600);
+
+  write(*to_server, buffer, sizeof(buffer));
+
+  //open and wait for connection
+  from_server = open(buffer, O_RDONLY, 0);
+  read(from_server, buffer, sizeof(buffer));
+  /*validate buffer code goes here */
+  printf("[client] handshake: received [%s]\n", buffer);
+
+  //remove pp
+  remove(buffer);
+  printf("[client] handshake: removed pp\n");
+
+  //send ACK to server
+  write(*to_server, ACK, sizeof(buffer));
+
+  return dwn_pipe;
 }
 
 /*=========================
@@ -43,15 +86,15 @@ int server_handshake(int *to_client) {
 
   char buffer[HANDSHAKE_BUFFER_SIZE];
 
-  mkfifo("luigi", 0600);
+  mkfifo(WKP, 0600);
 
   //block on open, recieve mesage
   printf("[server] handshake: making wkp\n");
-  from_client = open( "luigi", O_RDONLY, 0);
+  from_client = open(WKP, O_RDONLY, 0);
   read(from_client, buffer, sizeof(buffer));
   printf("[server] handshake: received [%s]\n", buffer);
 
-  remove("luigi");
+  remove(WKP);
   printf("[server] handshake: removed wkp\n");
 
   //connect to client, send message
@@ -81,7 +124,7 @@ int client_handshake(int *to_server) {
 
   //send pp name to server
   printf("[client] handshake: connecting to wkp\n");
-  *to_server = open( "luigi", O_WRONLY, 0);
+  *to_server = open(WKP, O_WRONLY, 0);
   if ( *to_server == -1 )
     exit(1);
 

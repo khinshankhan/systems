@@ -11,6 +11,7 @@
 #define NETWORKING_H
 
 #define ACK "HOLA"
+#define WKP "Hi, Billy Mays here for that forking server"
 #define HANDSHAKE_BUFFER_SIZE 10
 #define BUFFER_SIZE 1000
 
