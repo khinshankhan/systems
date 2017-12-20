@@ -54,21 +54,18 @@ int server_connect(int from_client) {
   int dwn_pipe;
   char buffer[HANDSHAKE_BUFFER_SIZE];
 
-  //send pp name to server
-  printf("[client] handshake: connecting to wkp\n");
-  dwn_pipe = open(WKP, O_WRONLY, 0);
-  if(dwn_pipe == -1 ){
-    printf("Error: Billy Mays isn't finding his paparazzi\n");
-    //remove(from_client);
+  int make_status = read(from_client, buffer, sizeof(buffer));
+  if(make_status == -1){
+    printf("Error: Local Pipe Reading has failed. Billy Mays' is not a fortune teller.\n");
+    //close(from_client);
     exit(1);
   }
-
-  //make private pipe
-  sprintf(buffer, "%d", getpid() );
-  int make_status = mkfifo(buffer, 0600);
-  //in case pipe couldnt be made
-  if(make_status == -1){
-    printf("Error: Local Pipe Creation has failed. This is not part of Billy Mays' job.\n");
+  
+  printf("[subserver] handshake: received [%s]\n", buffer);
+  dwn_pipe = open(buffer, O_WRONLY);
+  if(dwn_pipe == -1){
+    printf("Error: Local Pipe Opening has failed. This is not part of Billy Mays' job.\n");
+    close(from_client);
     exit(1);
   }
 
@@ -79,12 +76,12 @@ int server_connect(int from_client) {
   }
 
   //open and wait for connection
-  dwn_pipe = open(buffer, O_RDONLY, 0);
   make_status = read(dwn_pipe, buffer, sizeof(buffer));
   if(make_status == -1){
     printf("Error: Local Pipe Reading has failed. This is not part of Billy Mays' job.\n");
     exit(1);
   }
+
   /*validate buffer code goes here */
   if(strncmp(buffer, ACK, sizeof(buffer)) == 0) {
     printf("[client] handshake: received [%s]\n", buffer);
@@ -94,8 +91,8 @@ int server_connect(int from_client) {
   }
 
   //remove pp
-  remove(buffer);
-  printf("[client] handshake: removed pp\n");
+  //remove(buffer);
+  //printf("[client] handshake: removed pp\n");
 
   //send ACK to server
   //write(*to_server, ACK, sizeof(buffer));
@@ -171,26 +168,34 @@ int client_handshake(int *to_server) {
   int from_server;
   char buffer[HANDSHAKE_BUFFER_SIZE];
 
+  char p_name[HANDSHAKE_BUFFER_SIZE];
+
   //send pp name to server
   printf("[client] handshake: connecting to wkp\n");
   *to_server = open(WKP, O_WRONLY, 0);
   if ( *to_server == -1 )
     exit(1);
-
   //make private pipe
-  sprintf(buffer, "%d", getpid() );
-  mkfifo(buffer, 0600);
+  sprintf(p_name, "%d", getpid() );
+  mkfifo(p_name, 0600);
 
-  write(*to_server, buffer, sizeof(buffer));
+  write(*to_server, p_name, sizeof(p_name));
 
   //open and wait for connection
-  from_server = open(buffer, O_RDONLY, 0);
+  from_server = open(p_name, O_RDONLY, 0);
   read(from_server, buffer, sizeof(buffer));
   /*validate buffer code goes here */
-  printf("[client] handshake: received [%s]\n", buffer);
-
+  if(strncmp(buffer, ACK, sizeof(buffer)) == 0){
+    printf("[client] handshake: received [%s]\n", buffer);
+  }
+  else{
+    printf("[client] Error: received message \"%s\" instead of confirmation message \"%s\".\n...Billy Mays joke here\n", buffer, ACK);
+    close(*to_server);
+    close(from_server);
+    exit(1);
+  }
   //remove pp
-  remove(buffer);
+  remove(p_name);
   printf("[client] handshake: removed pp\n");
 
   //send ACK to server
