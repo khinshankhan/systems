@@ -23,7 +23,7 @@ int server_setup() {
     printf("Error: WKP Creation has failed. Billy Mays is not liable.\n");
     exit(1);
   }
-
+  
   //block on open, recieve mesage
   printf("[server] handshake: making wkp\n");
   up_pipe = open(WKP, O_RDONLY, 0);
@@ -33,11 +33,14 @@ int server_setup() {
     remove(WKP);
     exit(1);
   }
+  /*
   read(up_pipe, buffer, sizeof(buffer));
   printf("[server] handshake: received [%s]\n", buffer);
 
   remove(WKP);
+
   printf("[server] handshake: removed wkp\n");
+  */
   return up_pipe;
 }
 
@@ -57,7 +60,7 @@ int server_connect(int from_client) {
   int make_status = read(from_client, buffer, sizeof(buffer));
   if(make_status == -1){
     printf("Error: Local Pipe Reading has failed. Billy Mays' is not a fortune teller.\n");
-    //close(from_client);
+    close(from_client);
     exit(1);
   }
   
@@ -69,7 +72,7 @@ int server_connect(int from_client) {
     exit(1);
   }
 
-  make_status = write(dwn_pipe, buffer, sizeof(buffer));
+  make_status = write(dwn_pipe, ACK, sizeof(ACK));
   if(make_status == -1){
     printf("Error: Local Pipe Writing has failed. This is not part of Billy Mays' job.\n");
     exit(1);
@@ -88,13 +91,16 @@ int server_connect(int from_client) {
   }
   else{
     printf("Error: received message \"%s\" instead of confirmation message \"%s\".\nBilly Mays' instructions were not listened to\n", buffer, ACK);
+    close(from_client);
+    close(dwn_pipe);
+    exit(-1);
   }
 
   //remove pp
   //remove(buffer);
   //printf("[client] handshake: removed pp\n");
 
-  //send ACK to server
+  //send ACK to serverx
   //write(*to_server, ACK, sizeof(buffer));
 
   return dwn_pipe;
