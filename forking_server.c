@@ -26,7 +26,7 @@ void subserver(int from_client) {
   char buffer[BUFFER_SIZE];
   while (read(from_client, buffer, sizeof(buffer))) {
     //should we print pid?
-    printf("[subserver] received from client: %s\n", buffer);
+    printf("[subserver %d] received from client: %s\n", getpid(), buffer);
     process(buffer);
     write(to_client, buffer, sizeof(buffer));
   }

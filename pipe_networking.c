@@ -14,8 +14,10 @@
 int server_setup() {
   int up_pipe;
   char buffer[HANDSHAKE_BUFFER_SIZE];
-
+  
+  printf("\n\n");
   printf(WKP);
+  printf("\n\n");
 
   int make_status = mkfifo(WKP, 0600);
   //in case pipe couldnt be made
@@ -26,6 +28,8 @@ int server_setup() {
   
   //block on open, recieve mesage
   printf("[server] handshake: making wkp\n");
+  printf("\n");
+
   up_pipe = open(WKP, O_RDONLY, 0);
   //in case pipe couldnt be accessed
   if(up_pipe == -1) {
@@ -79,7 +83,7 @@ int server_connect(int from_client) {
   }
 
   //open and wait for connection
-  make_status = read(dwn_pipe, buffer, sizeof(buffer));
+  make_status = read(from_client, buffer, sizeof(buffer));
   if(make_status == -1){
     printf("Error: Local Pipe Reading has failed. This is not part of Billy Mays' job.\n");
     exit(1);
