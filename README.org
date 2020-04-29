@@ -1,0 +1,12 @@
+#+TITLE: systems
+#+AUTHOR: Khinshan Khan
+
+An aggregation of my work in Systems "MKS65"
+
+* Note
+
+  Extremely WIP, haven't figured out renaming and structure yet. For now, I'm just =git subtree='ing
+  some of the repos in, though others remain private or on other people's profiles (quite a tedious
+  process finding all of them).
+
+  Stay tuned... if you want :shipit:
